@@ -1,0 +1,26 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio / IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# NuGet / packages
+packages/
+*.nupkg
+
+# Local tools and temporary files
+.tools/
+*.log
+*.tmp
+*.temp
+
+# OS files
+Thumbs.db
+.DS_Store

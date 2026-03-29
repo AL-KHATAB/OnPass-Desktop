@@ -1,0 +1,114 @@
+<UserControl x:Class="OnPass.Presentation.Controls.RegisterControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Grid.ColumnSpan="2" Height="30" VerticalAlignment="Top" 
+                Background="Transparent" MouseDown="TopBar_MouseDown" 
+                Panel.ZIndex="100" />
+
+        <Border Grid.Column="0" Background="#1c1f26" CornerRadius="10,0,0,10">
+            <Grid>
+                <StackPanel VerticalAlignment="Center" MaxWidth="400">
+                    <TextBlock Text="Register" HorizontalAlignment="Center" Margin="0,20,0,40" 
+                             FontSize="36" FontWeight="SemiBold" FontFamily="Segoe UI" Foreground="White"/>
+
+                    <Grid Margin="40,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" Text="USERNAME" FontSize="14" FontWeight="SemiBold" 
+                                 Foreground="#CFE8FF" Margin="0,0,0,8"/>
+                        <Border Grid.Row="1" Background="#232b38" CornerRadius="8" Margin="0,0,0,20">
+                            <TextBox x:Name="UsernameInput" KeyDown="Input_KeyDown" Style="{StaticResource ModernTextBox}" 
+                                   Height="48" Foreground="White"/>
+                        </Border>
+
+                        <TextBlock Grid.Row="2" Text="PASSWORD" FontSize="14" FontWeight="SemiBold" 
+                                 Foreground="#CFE8FF" Margin="0,0,0,8"/>
+                        <Border Grid.Row="3" Background="#232b38" CornerRadius="8" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <PasswordBox x:Name="PasswordInput" KeyDown="Input_KeyDown" Grid.Column="0" 
+                                           Style="{StaticResource ModernPasswordBox}" 
+                                           Height="48" Foreground="White"
+                                           PasswordChanged="PasswordInput_PasswordChanged"/>
+
+                                <TextBox x:Name="PasswordVisible" KeyDown="Input_KeyDown" Grid.Column="0"
+                                       Style="{StaticResource ModernTextBox}"
+                                       Height="48" Foreground="White"
+                                       Visibility="Collapsed" 
+                                       TextChanged="PasswordVisible_TextChanged"/>
+
+                                <Button x:Name="TogglePasswordButton" Grid.Column="1" 
+                                        Style="{StaticResource ImageButtonStyle}" 
+                                        Click="TogglePasswordButton_Click">
+                                    <TextBlock FontFamily="Segoe MDL2 Assets" Text="&#xE7B3;" FontSize="24" Foreground="White"/>
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <Border Grid.Row="4" Background="#273145" CornerRadius="4" Margin="0,0,0,8">
+                            <ProgressBar x:Name="PasswordStrengthBar" Height="8" 
+                                       Minimum="0" Maximum="100" Value="0" 
+                                       Foreground="#A3BE8C" Background="Transparent" 
+                                       BorderThickness="0"/>
+                        </Border>
+
+                        <TextBlock Grid.Row="5" x:Name="PasswordStrengthMessage" 
+                                 HorizontalAlignment="Right" 
+                                 FontSize="13" Foreground="#CFE8FF" 
+                                 FontFamily="Segoe UI" Margin="0,0,0,25"/>
+
+                        <Button Grid.Row="6" Content="Register" Style="{StaticResource LoginButton}" 
+                              Background="#3BA7FF" Foreground="White" Height="50" 
+                              Click="RegisterButton_Click"/>
+
+                        <TextBlock Grid.Row="7" HorizontalAlignment="Center" Margin="0,25,0,0" FontSize="14" Foreground="#CFE8FF">
+                            <Run Text="Already have an account? "/>
+                            <TextBlock Text="Login" Foreground="#2d8dd8" FontWeight="SemiBold" Cursor="Hand" 
+                                     MouseLeftButtonDown="LoginTextBlock_MouseLeftButtonDown"/>
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="1" Background="#fafbfd" CornerRadius="0,10,10,0">
+            <Grid>
+                <StackPanel VerticalAlignment="Center">
+                    <Viewbox MaxHeight="300" MaxWidth="300" Margin="0,0,0,30">
+                        <Image Source="pack://application:,,,/Resources/Images/OnPassNew.png"
+                               SnapsToDevicePixels="True"
+                               UseLayoutRounding="True"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Viewbox>
+                    
+                    <TextBlock Text="Welcome to OnPass" FontSize="36" Foreground="#273145" 
+                             HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                    
+                    <TextBlock Text="Create your OnPass account" FontSize="18" Foreground="#273145" 
+                             HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
+

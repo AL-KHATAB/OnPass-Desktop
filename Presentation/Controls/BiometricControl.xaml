@@ -1,0 +1,79 @@
+<UserControl x:Class="OnPass.Presentation.Controls.BiometricLoginControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Grid.ColumnSpan="2" Height="30" VerticalAlignment="Top" 
+                Background="Transparent" MouseDown="TopBar_MouseDown" 
+                Panel.ZIndex="100" />
+
+        <Border Grid.Column="0" Background="#1c1f26" CornerRadius="10,0,0,10">
+            <Grid>
+                <StackPanel VerticalAlignment="Center" MaxWidth="400">
+                    <TextBlock Text="OnPass Biometric Login" HorizontalAlignment="Center" Margin="0,20,0,50"
+                             FontSize="36" FontWeight="SemiBold" FontFamily="Segoe UI" Foreground="White" />
+
+                    <Grid Margin="40,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Row="0" HorizontalAlignment="Center" TextAlignment="Center"
+                                   Text="Use Windows Hello for OnPass to continue to OnPass" 
+                                   FontSize="16" FontWeight="Normal"
+                                   Foreground="White" Margin="0,0,0,40" TextWrapping="Wrap" />
+
+                        <Button Grid.Row="1" x:Name="BiometricAuthButton" Content="Authenticate" 
+                                Style="{StaticResource LoginButton}"
+                                Background="#3BA7FF" Height="50" Click="BiometricAuthButton_Click" 
+                                Foreground="White" Margin="0,0,0,15">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="ðŸ”" FontSize="16" Margin="0,0,8,0"/>
+                                        <TextBlock Text="Use Windows Hello for OnPass" FontSize="14"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
+
+                        <Button Grid.Row="2" Content="Cancel" Style="{StaticResource Biometric}"
+                                Background="#273145" Height="40" Click="CancelButton_Click" 
+                                Foreground="White" Margin="0,0,0,40" />
+
+                        <TextBlock Grid.Row="3" HorizontalAlignment="Center" Margin="0,20,0,0" FontSize="14" Foreground="#CFE8FF">
+                            <TextBlock Text="Login with password instead" Foreground="#2d8dd8" FontWeight="SemiBold" Cursor="Hand"
+                                     MouseLeftButtonDown="PasswordLogin_MouseLeftButtonDown" />
+                        </TextBlock>
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Column="1" Background="White" CornerRadius="0,10,10,0">
+            <Grid>
+                <StackPanel VerticalAlignment="Center">
+                    <Viewbox MaxHeight="300" MaxWidth="300" Margin="0,0,0,30">
+                        <Image Source="pack://application:,,,/Resources/Images/OnPassNew.png" 
+                               SnapsToDevicePixels="True"
+                               UseLayoutRounding="True"
+                               RenderOptions.BitmapScalingMode="HighQuality"/>
+                    </Viewbox>
+                    <TextBlock Text="Windows Hello for OnPass" FontSize="36" Foreground="#273145"
+                             HorizontalAlignment="Center" Margin="0,0,0,10" />
+
+                    <TextBlock Text="Secure biometric authentication" FontSize="18" Foreground="#273145"
+                             HorizontalAlignment="Center" />
+                </StackPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
