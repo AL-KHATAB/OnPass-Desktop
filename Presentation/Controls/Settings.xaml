@@ -138,10 +138,18 @@
                         <Button Content="Import Data" Style="{StaticResource SaveButton}" 
                                 Background="#3BA7FF" Margin="10,0,0,0" Click="ImportData_Click"/>
                     </StackPanel>
+                    <TextBlock TextWrapping="Wrap" Foreground="#FFFFFF" Margin="0,12,0,0">
+                        <Run Text="Need help exporting or importing user data? Check out this "/>
+                        <Hyperlink NavigateUri="https://al-khatab.github.io/OnPass-website/export_user_tutorial.html" RequestNavigate="Hyperlink_RequestNavigate"
+                                   Foreground="#3BA7FF">
+                            Tutorial
+                        </Hyperlink>
+                        <Run Text="."/>
+                    </TextBlock>
                 </StackPanel>
             </Border>
 
-            <Border Style="{StaticResource SettingsCard}" Height="163">
+            <Border Style="{StaticResource SettingsCard}">
                 <StackPanel>
                     <TextBlock Text="Passwords" Style="{StaticResource SectionTitle}"/>
 
@@ -162,13 +170,6 @@
                     Background="#3BA7FF" Margin="10,0,0,0" Click="ImportPasswords_Click"/>
                         
                     </StackPanel>
-                    <TextBlock TextWrapping="Wrap" Foreground="#FFFFFF" Margin="0,0,0,0">
-                    <Run Text="If you need help importing passwords or exporting passwords you can consult this for help:"/>
-                    <Hyperlink NavigateUri="https://al-khatab.github.io/OnPass-website/export_user_tutorial.html" RequestNavigate="Hyperlink_RequestNavigate"
-                               Foreground="#3BA7FF">
-                                Tutorial
-                    </Hyperlink>
-                    </TextBlock>
                 </StackPanel>
             </Border>
 
