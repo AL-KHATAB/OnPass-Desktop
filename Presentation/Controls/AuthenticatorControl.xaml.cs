@@ -360,18 +360,9 @@ namespace OnPass.Presentation.Controls
             grid.Children.Add(headerPanel);
             Grid.SetRow(headerPanel, 0);
 
-            TextBlock iconBlock = new TextBlock
-            {
-                Text = "??",
-                FontSize = 24,
-                VerticalAlignment = VerticalAlignment.Center,
-                Margin = new Thickness(0, 0, 10, 0)
-            };
-            headerPanel.Children.Add(iconBlock);
-
             TextBlock titleBlock = new TextBlock
             {
-                Text = "Add New Asthenticator",
+                Text = "Add New Authenticator",
                 FontSize = 20,
                 FontWeight = FontWeights.SemiBold,
                 VerticalAlignment = VerticalAlignment.Center,
@@ -387,15 +378,6 @@ namespace OnPass.Presentation.Controls
             };
             grid.Children.Add(namePanel);
             Grid.SetRow(namePanel, 1);
-
-            TextBlock nameIcon = new TextBlock
-            {
-                Text = "??",
-                FontSize = 14,
-                Margin = new Thickness(0, 0, 5, 0),
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            namePanel.Children.Add(nameIcon);
 
             TextBlock nameLabel = new TextBlock
             {
@@ -432,15 +414,6 @@ namespace OnPass.Presentation.Controls
             };
             grid.Children.Add(secretPanel);
             Grid.SetRow(secretPanel, 3);
-
-            TextBlock secretIcon = new TextBlock
-            {
-                Text = "??",
-                FontSize = 14,
-                Margin = new Thickness(0, 0, 5, 0),
-                VerticalAlignment = VerticalAlignment.Center
-            };
-            secretPanel.Children.Add(secretIcon);
 
             TextBlock secretLabel = new TextBlock
             {

@@ -20,7 +20,7 @@
                     Margin="0,0,0,15">
             <Button x:Name="AddButton" 
                     
-                    Content="âž•Add New" 
+                    Content="Add New" 
                     Width="110" 
                     Height="38" 
                     Click="AddButton_Click" 
@@ -62,7 +62,7 @@
             </Button>
 
             <Button x:Name="RemoveButton" 
-                    Content="ðŸ—‘ï¸Remove" 
+                    Content="Remove" 
                     Width="110" 
                     Height="38" 
                     Click="RemoveButton_Click"
