@@ -6,11 +6,14 @@ using System.Text;
 
 namespace OnPass.Infrastructure.Security
 {
+    // Provides the AES helpers used to protect vault data at rest.
+    // The implementation also clears temporary plaintext buffers wherever possible.
     public static class AesEncryption
     {
         [DllImport("kernel32.dll", EntryPoint = "RtlZeroMemory")]
         public static extern bool ZeroMemory(IntPtr destination, int length);
 
+        // Encrypts plaintext with the supplied key material before it is written to disk.
         public static byte[] Encrypt(string plainText, byte[] key, byte[] iv)
         {
             if (string.IsNullOrEmpty(plainText))
@@ -49,6 +52,7 @@ namespace OnPass.Infrastructure.Security
             }
         }
 
+        // Decrypts stored ciphertext back into UTF-8 text inside the trusted desktop process.
         public static string Decrypt(byte[] cipherText, byte[] key, byte[] iv)
         {
             if (cipherText == null || cipherText.Length == 0)
@@ -83,6 +87,7 @@ namespace OnPass.Infrastructure.Security
             }
         }
 
+        // Generates a fresh IV so repeated plaintext values do not encrypt to the same output.
         public static byte[] GenerateIV()
         {
             using (Aes aes = Aes.Create())
@@ -92,6 +97,7 @@ namespace OnPass.Infrastructure.Security
             }
         }
 
+        // Creates random key material when the application needs a standalone AES key.
         public static byte[] GenerateKey(int keySize = 32)
         {
             byte[] key = new byte[keySize];
@@ -102,6 +108,7 @@ namespace OnPass.Infrastructure.Security
             return key;
         }
 
+        // Compares byte arrays without returning early so the timing is less data-dependent.
         public static bool SecureEquals(byte[] a, byte[] b)
         {
             if (a.Length != b.Length)
@@ -116,6 +123,7 @@ namespace OnPass.Infrastructure.Security
         }
     }
 
+    // Pins sensitive bytes in memory so they can be wiped explicitly during disposal.
     public sealed class SecureStringHelper : IDisposable
     {
         private GCHandle _handle;
@@ -135,6 +143,7 @@ namespace OnPass.Infrastructure.Security
             return _data;
         }
 
+        // Clears the pinned buffer before releasing it back to the runtime.
         public void Dispose()
         {
             if (!_disposed)

@@ -7,6 +7,8 @@ using OnPass.Domain;
 using OnPass.Infrastructure.Storage;
 
 namespace OnPass.Infrastructure.Web;
+// Hosts the localhost API that the browser extension uses to validate the
+// current desktop session and request decrypted passwords on demand.
 public class LocalWebServer
 {
     private const int PrimaryPort = 9876;
@@ -36,6 +38,7 @@ public class LocalWebServer
         }
     }
 
+    // Starts listening on localhost and keeps processing extension requests until shutdown.
     public void Start()
     {
         if (_isRunning) return;
@@ -97,6 +100,7 @@ public class LocalWebServer
         }
     }
 
+    // Stops the listener, cancels the background loop, and invalidates the current session token.
     public void Stop()
     {
         if (!_isRunning) return;
@@ -126,10 +130,13 @@ public class LocalWebServer
         }
     }
 
+    // Routes extension requests, handles CORS preflight, and guards endpoints with the bearer token.
     private void ProcessRequest(HttpListenerContext context)
     {
         try
         {
+            // Browser fetches to localhost still need explicit CORS headers so the
+            // extension can send Authorization headers and preflight requests.
             context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
             context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, OPTIONS");
             context.Response.Headers.Add("Access-Control-Allow-Headers", "Authorization");
@@ -206,6 +213,7 @@ public class LocalWebServer
         }
     }
 
+    // Generates a high-entropy token that represents the currently logged-in desktop session.
     private static string GenerateAccessToken()
     {
         byte[] tokenData = RandomNumberGenerator.GetBytes(32);
