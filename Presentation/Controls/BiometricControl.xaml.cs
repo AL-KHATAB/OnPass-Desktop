@@ -11,6 +11,8 @@ using OnPass.Infrastructure.Web;
 
 namespace OnPass.Presentation.Controls
 {
+    // Handles Windows Hello login by recovering the protected master-password
+    // bootstrap and reusing the same post-login path as normal password auth.
     public partial class BiometricLoginControl : UserControl
     {
         private MainWindow mainWindow;
@@ -21,6 +23,7 @@ namespace OnPass.Presentation.Controls
             mainWindow = mw;
         }
 
+        // Allows the biometric screen to share the same custom window chrome behavior as login and register.
         private void TopBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -36,6 +39,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Runs the Windows Hello verification flow before attempting to recover any stored biometric bootstrap secret.
         private async void BiometricAuthButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -95,6 +99,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Decrypts the DPAPI-protected password bootstrap, derives the session key, and starts the usual dashboard session.
         private void HandleBiometricLogin(string username, byte[] encryptedPassword)
         {
             try
@@ -162,6 +167,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Reuses the same auto-lock lookup as password login so biometric sessions follow identical inactivity rules.
         private int GetAutoLockTimeFromSettings(string username)
         {
             int minutes = 5;
@@ -205,6 +211,7 @@ namespace OnPass.Presentation.Controls
             return minutes;
         }
 
+        // Falls back to the standard password login flow when the user cancels biometric authentication.
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             mainWindow.Navigate(new LoginControl(mainWindow));

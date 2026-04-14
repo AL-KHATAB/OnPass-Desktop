@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace OnPass.Presentation.Controls
 {
-
+    // Generates strong passwords from configurable character sets, estimates
+    // strength, and supports secure clipboard handling after copy operations.
     public partial class GeneratePasswordControl : UserControl
     {
         private string _username;
@@ -40,11 +41,13 @@ namespace OnPass.Presentation.Controls
             SpecialToggle.Unchecked += (s, e) => UpdatePasswordStrength();
         }
 
+        // Regenerates a new password using the current slider and toggle selections.
         private void GeneratePassword_Click(object sender, RoutedEventArgs e)
         {
             GenerateNewPassword();
         }
 
+        // Builds the password from the current UI options and updates the strength meter immediately afterwards.
         private void GenerateNewPassword()
         {
             try
@@ -70,6 +73,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Assembles the active character pool, optionally removing visually confusing characters.
         private string BuildCharacterSet()
         {
             StringBuilder charSet = new StringBuilder();
@@ -107,6 +111,7 @@ namespace OnPass.Presentation.Controls
             return result;
         }
 
+        // Uses a cryptographic RNG so generated passwords do not depend on predictable UI-thread randomness.
         private string GenerateSecurePassword(string characterSet, int length)
         {
             using (var rng = RandomNumberGenerator.Create())
@@ -128,6 +133,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Recomputes the strength meter whenever generation settings change.
         private void UpdatePasswordStrength()
         {
             try
@@ -153,6 +159,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Converts length and enabled character classes into a simple user-facing strength score.
         private int CalculatePasswordStrength(int length, int characterTypes)
         {
             int score = 0;
@@ -167,6 +174,7 @@ namespace OnPass.Presentation.Controls
             return Math.Min(score, 100);
         }
 
+        // Updates the strength label and progress-bar color to match the current score.
         private void UpdateStrengthDisplay(int score)
         {
             if (score < 30)
@@ -195,6 +203,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Copies the generated password and uses the same delayed clipboard clearing policy as the rest of the app.
         private void CopyPassword_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -237,6 +246,7 @@ namespace OnPass.Presentation.Controls
                                 MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        // Clears the clipboard only if the generated password is still the current clipboard contents.
         private async Task ClearClipboardIfUnchangedAsync(string copiedText, int seconds = 30)
         {
             try

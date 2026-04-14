@@ -18,6 +18,8 @@ using OnPass.Presentation.Windows;
 
 namespace OnPass.Presentation.Controls
 {
+    // Manages the user's saved password entries, including search, edit, delete,
+    // password history restore, and encrypted persistence through the storage layer.
     public partial class PasswordVaultControl : UserControl
     {
         private string _username;
@@ -40,6 +42,7 @@ namespace OnPass.Presentation.Controls
             CheckWelcomeGridVisibility();
         }
 
+        // Adds a plain-text textbox alongside the PasswordBox so the user can toggle visibility safely.
         private void InitializePasswordVisibilityToggle()
         {
             passwordTextBox = new TextBox
@@ -84,6 +87,7 @@ namespace OnPass.Presentation.Controls
             _encryptionKey = key;
         }
 
+        // Loads the encrypted vault for the current user and repopulates the observable collection.
         private void LoadPasswords()
         {
             try
@@ -112,6 +116,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Shows the empty-state UI when there are no passwords or no active selection.
         private void CheckWelcomeGridVisibility()
         {
             if (SavedPasswords.Count == 0 || PasswordListBox.SelectedItem == null)
@@ -156,6 +161,7 @@ namespace OnPass.Presentation.Controls
             PasswordListBox.ItemsSource = filteredPasswords;
         }
 
+        // Persists the current in-memory vault snapshot back to the encrypted storage file.
         private void SaveAllPasswords()
         {
             try
@@ -180,6 +186,7 @@ namespace OnPass.Presentation.Controls
             SaveAllPasswords();
         }
 
+        // Returns the user to the login screen when the vault can no longer access a valid session key.
         private void LogOut()
         {
             mainWindow.Navigate(new LoginControl(mainWindow));
@@ -191,6 +198,7 @@ namespace OnPass.Presentation.Controls
             WelcomeGrid.Visibility = Visibility.Collapsed;
         }
 
+        // Handles both creating a new entry and updating an existing one from the same form.
         private void SavePassword_Click(object sender, RoutedEventArgs e)
         {
             string password = NewPasswordBox.Visibility == Visibility.Visible ? NewPasswordBox.Password : PlainTextPassword.Text;
@@ -242,6 +250,7 @@ namespace OnPass.Presentation.Controls
             CloseCreatePasswordGrid();
         }
 
+        // Opens the password history dialog so users can inspect and optionally restore previous secrets.
         private void ViewHistory_Click(object sender, RoutedEventArgs e)
         {
             var selectedItem = PasswordListBox.SelectedItem as PasswordItem;
@@ -300,6 +309,7 @@ namespace OnPass.Presentation.Controls
             CreatePasswordGrid.BeginAnimation(UIElement.OpacityProperty, fadeOst);
         }
 
+        // Shows a confirmation overlay before the selected password entry is removed from the vault.
         private void ShowDeleteConfirmationGrid()
         {
             IsUACActive = true;
@@ -311,6 +321,7 @@ namespace OnPass.Presentation.Controls
             UACOverlay.BeginAnimation(UIElement.OpacityProperty, fadeIn);
         }
 
+        // Hides the delete confirmation overlay and returns focus to the normal vault UI.
         private void HideDeleteConfirmationGrid()
         {
             var fadeOst = new DoubleAnimation(1, 0, TimeSpan.FromSeconds(0.5));
@@ -351,6 +362,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Opens the create/edit form and populates it either with the selected entry or blank values for a new one.
         private void OpenPasswordForm(PasswordItem item)
         {
             CreatePasswordGrid.Visibility = Visibility.Visible;

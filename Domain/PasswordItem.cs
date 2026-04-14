@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace OnPass.Domain
 {
+    // Captures one previous password value so the vault can restore or audit
+    // password changes without storing history in a separate structure.
     public class PasswordHistoryEntry
     {
         public string Password { get; set; } = string.Empty;
@@ -10,6 +12,8 @@ namespace OnPass.Domain
         public string ChangedBy { get; set; } = string.Empty;
     }
 
+    // Represents one saved vault entry together with its password history and
+    // the behaviors needed to update, restore, and clear that history.
     public class PasswordItem
     {
         public string Name { get; set; } = string.Empty;
@@ -28,6 +32,7 @@ namespace OnPass.Domain
             DateModified = DateTime.Now;
         }
 
+        // Records the previous password before replacing it so history survives normal credential updates.
         public void UpdatePassword(string newPassword, string changedBy)
         {
             if (!string.IsNullOrEmpty(Password) && Password != newPassword)
@@ -43,6 +48,7 @@ namespace OnPass.Domain
             DateModified = DateTime.Now;
         }
 
+        // Restores a selected historical password while preserving the current value as a new history entry.
         public void RestorePassword(int historyIndex, string changedBy)
         {
             if (historyIndex >= 0 && historyIndex < PasswordHistory.Count)
@@ -66,11 +72,13 @@ namespace OnPass.Domain
             }
         }
 
+        // Clears password history without affecting the current live password value.
         public void ClearHistory()
         {
             PasswordHistory.Clear();
         }
 
+        // Returns a copy so callers cannot mutate the internal history list directly.
         public List<PasswordHistoryEntry> GetPasswordHistory()
         {
             return new List<PasswordHistoryEntry>(PasswordHistory);

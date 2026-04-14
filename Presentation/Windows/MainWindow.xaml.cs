@@ -13,6 +13,8 @@ using System.IO;
 
 namespace OnPass.Presentation.Windows
 {
+    // Hosts the main desktop shell, manages inactivity locking and tray behavior,
+    // and coordinates navigation between login and dashboard views.
     public partial class MainWindow : Window
     {
         private const double NormalTopBarHeight = 40;
@@ -37,6 +39,7 @@ namespace OnPass.Presentation.Windows
             Closing += MainWindow_Closing!;
         }
 
+        // Starts the global inactivity timer so auto-lock behaves consistently across every screen.
         private void InitializeActivityMonitoring()
         {
             // Auto-lock is enforced centrally at the shell level so every screen
@@ -82,6 +85,7 @@ namespace OnPass.Presentation.Windows
             }
         }
 
+        // Resets the UI and tears down the localhost bridge when the user session is locked.
         public void LockApplication()
         {
             isLocked = true;
@@ -104,6 +108,7 @@ namespace OnPass.Presentation.Windows
                             MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        // Records the active user session so the shell can enforce auto-lock and tray behavior correctly.
         public void UserLoggedIn(string username, int lockTimeMinutes)
         {
             currentUsername = username;
@@ -112,6 +117,7 @@ namespace OnPass.Presentation.Windows
             ResetActivityTimer();
         }
 
+        // Creates the tray icon and its context menu so the app can stay available while hidden.
         private void InitializeTrayIcon()
         {
             try
@@ -323,6 +329,7 @@ namespace OnPass.Presentation.Windows
             trayIcon.TrayMouseDoubleClick += (s, e) => ShowMainWindow();
         }
 
+        // Restores the hidden window when the user opens the app from the tray.
         private void ShowMainWindow()
         {
             this.Show();
@@ -330,6 +337,7 @@ namespace OnPass.Presentation.Windows
             this.Activate();
         }
 
+        // Opens the settings flow through the dashboard so the same authenticated navigation path is reused.
         private void SettingsControl()
         {
 
@@ -361,6 +369,7 @@ namespace OnPass.Presentation.Windows
             }
         }
 
+        // Disposes the tray icon before shutting down the desktop process.
         private void ExitApplication()
         {
             trayIcon!.Dispose();
@@ -402,6 +411,7 @@ namespace OnPass.Presentation.Windows
             this.Top = primaryScreen.Top + (primaryScreen.Height - this.Height) / 2;
         }
 
+        // Switches the content area to the requested screen while preserving shell-level behavior.
         public void Navigate(UserControl newPage)
         {
             MainContent.Content = newPage;
@@ -447,6 +457,7 @@ namespace OnPass.Presentation.Windows
             }
         }
 
+        // Keeps the custom chrome layout aligned when the window toggles between normal and maximized states.
         public void ToggleWindowState()
         {
             if (this.WindowState == WindowState.Maximized)

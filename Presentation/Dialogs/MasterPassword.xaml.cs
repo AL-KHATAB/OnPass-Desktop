@@ -8,6 +8,8 @@ using System.Windows.Media.Animation;
 
 namespace OnPass.Presentation.Dialogs
 {
+    // Builds and validates the master-password change dialog before the settings
+    // screen re-encrypts the user's stored secrets with the new key material.
     public partial class MasterPassword : Window
     {
         private TextBox oldPasswordVisible;
@@ -35,6 +37,8 @@ namespace OnPass.Presentation.Dialogs
             this.username = username;
             this.encryptionKey = encryptionKey;
 
+            // The dialog UI is built in code so the password visibility toggles and
+            // strength feedback can be configured alongside the validation workflow.
             Title = "Change Master Password";
             Width = 420;
             Height = 560;
@@ -400,6 +404,7 @@ namespace OnPass.Presentation.Dialogs
             buttonPanel.Children.Add(okButton);
         }
 
+        // Reuses one rounded button template so both dialog actions stay visually consistent.
         private ControlTemplate CreateButtonTemplateWithHover(SolidColorBrush normalBrush, SolidColorBrush hoverBrush)
         {
             ControlTemplate template = new ControlTemplate(typeof(Button));
@@ -426,6 +431,7 @@ namespace OnPass.Presentation.Dialogs
             return template;
         }
 
+        // Lets the user inspect the current password without changing the underlying validation flow.
         private void ToggleOldPasswordButton_Click(object sender, RoutedEventArgs e)
         {
             oldPasswordVisible_ = !oldPasswordVisible_;
@@ -444,6 +450,7 @@ namespace OnPass.Presentation.Dialogs
             }
         }
 
+        // Mirrors the new password into a text box for temporary visibility while keeping the same source value.
         private void ToggleNewPasswordButton_Click(object sender, RoutedEventArgs e)
         {
             newPasswordVisible_ = !newPasswordVisible_;
@@ -462,6 +469,7 @@ namespace OnPass.Presentation.Dialogs
             }
         }
 
+        // Uses the same show/hide pattern for the confirmation field so both entries stay aligned.
         private void ToggleConfirmPasswordButton_Click(object sender, RoutedEventArgs e)
         {
             confirmPasswordVisible_ = !confirmPasswordVisible_;
@@ -480,6 +488,7 @@ namespace OnPass.Presentation.Dialogs
             }
         }
 
+        // Updates the strength meter when the hidden new-password box changes.
         private void NewPasswordInput_PasswordChanged(object sender, RoutedEventArgs e)
         {
             string password = newPasswordInput.Password;
@@ -488,6 +497,7 @@ namespace OnPass.Presentation.Dialogs
             passwordStrengthMessage.Text = GetStrengthMessage(strength);
         }
 
+        // Keeps the strength feedback in sync when the visible text version is active.
         private void NewPasswordVisible_TextChanged(object sender, TextChangedEventArgs e)
         {
             string password = newPasswordVisible.Text;
@@ -496,6 +506,7 @@ namespace OnPass.Presentation.Dialogs
             passwordStrengthMessage.Text = GetStrengthMessage(strength);
         }
 
+        // Animates password-strength feedback as the proposed new password changes.
         private void AnimateProgressBar(int targetValue)
         {
             DoubleAnimation animation = new DoubleAnimation
@@ -516,6 +527,7 @@ namespace OnPass.Presentation.Dialogs
                 passwordStrengthBar.Foreground = new SolidColorBrush(Colors.Green);
         }
 
+        // Uses the same simple strength heuristic as registration so password guidance stays consistent.
         private int CalculatePasswordStrength(string password)
         {
             int strength = 0;
@@ -539,6 +551,7 @@ namespace OnPass.Presentation.Dialogs
             return strength;
         }
 
+        // Converts the numeric strength score into dialog-friendly guidance text.
         private string GetStrengthMessage(int strength)
         {
             if (strength < 40)
@@ -549,6 +562,7 @@ namespace OnPass.Presentation.Dialogs
                 return "Strong password";
         }
 
+        // Confirms the existing password against the stored credential record before any change is accepted.
         private bool ValidateCurrentPassword(string oldPassword)
         {
             try
@@ -588,6 +602,7 @@ namespace OnPass.Presentation.Dialogs
             }
         }
 
+        // Compares hashes without allocating additional temporary collections.
         private bool CompareByteArrays(byte[] array1, byte[] array2)
         {
             if (array1.Length != array2.Length)
@@ -602,6 +617,7 @@ namespace OnPass.Presentation.Dialogs
             return true;
         }
 
+        // Recreates the credential-file hash format for validation and update operations.
         private byte[] HashPassword(string password, byte[] salt, int iterations = 10000, int hashSize = 32)
         {
             using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256))
@@ -610,6 +626,7 @@ namespace OnPass.Presentation.Dialogs
             }
         }
 
+        // Generates a new salt so the updated master password gets a fresh credential record.
         private byte[] GenerateSalt(int saltSize = 16)
         {
             byte[] salt = new byte[saltSize];
@@ -617,6 +634,7 @@ namespace OnPass.Presentation.Dialogs
             return salt;
         }
 
+        // Validates the full dialog state before handing the old and new passwords back to the settings workflow.
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             string oldPassword = oldPasswordVisible_ ? oldPasswordVisible.Text : oldPasswordInput.Password;
@@ -672,6 +690,7 @@ namespace OnPass.Presentation.Dialogs
             }
         }
 
+        // Rewrites the user's line in the credentials file with a new salt and hash after validation succeeds.
         private bool ChangePasswordInCredentialsFile(string oldPassword, string newPassword)
         {
             try
@@ -720,6 +739,7 @@ namespace OnPass.Presentation.Dialogs
             }
         }
 
+        // Closes the dialog without changing the stored master password.
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;

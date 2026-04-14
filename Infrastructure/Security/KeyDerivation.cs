@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 
 namespace OnPass.Infrastructure.Security
 {
+    // Derives stable encryption keys from the user's master password and
+    // generates fresh salts so password-based keys are not reused across users.
     public static class KeyDerivation
     {
 
@@ -11,6 +13,7 @@ namespace OnPass.Infrastructure.Security
         // the rest of the app's storage format.
         private const int DEFAULT_ITERATIONS = 1000000;
 
+        // Uses PBKDF2-SHA256 to turn the master password into AES key material for vault encryption.
         public static byte[] DeriveKey(string password, byte[] salt, int iterations = DEFAULT_ITERATIONS, int keySize = 32)
         {
             using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256))
@@ -19,6 +22,7 @@ namespace OnPass.Infrastructure.Security
             }
         }
 
+        // Generates a random salt so identical passwords do not derive identical keys.
         public static byte[] GenerateSalt(int size = 16)
         {
             byte[] salt = new byte[size];

@@ -14,6 +14,8 @@ using OnPass.Presentation.Windows;
 
 namespace OnPass.Presentation.Controls
 {
+    // Handles account creation by validating credentials, creating the initial
+    // encrypted vault, and writing the new user's settings and credential record.
     public partial class RegisterControl : UserControl
     {
         private MainWindow mainWindow;
@@ -25,6 +27,7 @@ namespace OnPass.Presentation.Controls
             mainWindow = mw;
         }
 
+        // Allows the registration screen to share the same custom window chrome behavior as login.
         private void TopBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -40,6 +43,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Pressing Enter on the registration form triggers the same flow as clicking Register.
         private void Input_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -48,6 +52,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Validates the new account, stores the credential record, and creates the initial encrypted vault.
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             string username = UsernameInput.Text;
@@ -116,6 +121,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Creates a per-user settings file so new accounts start with a predictable baseline configuration.
         private void CreateUserSettingsFile(string username, string OnPassPath)
         {
             try
@@ -140,11 +146,13 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Returns to the login screen when the user decides not to create a new account.
         private void LoginTextBlock_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             mainWindow.Navigate(new LoginControl(mainWindow));
         }
 
+        // Creates the salt stored beside the user's credential record.
         private byte[] GenerateSalt(int saltSize = 16)
         {
             byte[] salt = new byte[saltSize];
@@ -152,6 +160,7 @@ namespace OnPass.Presentation.Controls
             return salt;
         }
 
+        // Recreates the password hash format used by the credentials file.
         private byte[] HashPassword(string password, byte[] salt, int iterations = 10000, int hashSize = 32)
         {
             using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256))
@@ -194,6 +203,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Animates the progress bar so password-strength feedback feels responsive rather than abrupt.
         private void AnimateProgressBar(int targetValue)
         {
             DoubleAnimation animation = new DoubleAnimation
@@ -214,6 +224,7 @@ namespace OnPass.Presentation.Controls
                 PasswordStrengthBar.Foreground = new SolidColorBrush(Colors.Green);
         }
 
+        // Uses a simple heuristic to discourage short or low-variety passwords during registration.
         private int CalculatePasswordStrength(string password)
         {
             int strength = 0;
@@ -237,6 +248,7 @@ namespace OnPass.Presentation.Controls
             return strength;
         }
 
+        // Turns the numeric strength score into a short message suitable for the registration UI.
         private string GetStrengthMessage(int strength)
         {
             if (strength < 40)

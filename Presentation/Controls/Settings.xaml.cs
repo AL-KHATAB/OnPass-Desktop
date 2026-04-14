@@ -15,6 +15,8 @@ using OnPassMainWindow = OnPass.Presentation.Windows.MainWindow;
 
 namespace OnPass.Presentation.Controls
 {
+    // Coordinates user settings, biometric setup, master-password changes, and
+    // data import/export workflows for the active desktop account.
     public partial class Settings : System.Windows.Controls.UserControl
     {
         private string? username;
@@ -27,6 +29,7 @@ namespace OnPass.Presentation.Controls
             encryptionKey = key;
         }
 
+        // Loads persisted settings once the control is ready so toggle side effects can be managed safely.
         private void Settings_Loaded(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(username))
@@ -35,6 +38,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Rehydrates toggle and combo-box state from the per-user settings file and current app session state.
         private void LoadSettingsFromFileAndAppState()
         {
             try
@@ -139,6 +143,7 @@ namespace OnPass.Presentation.Controls
             BiometricToggle.Unchecked += BiometricToggle_Unchecked;
         }
 
+        // Persists a single per-user setting without rewriting the rest of the control state manually.
         private void SaveUserSetting(string settingName, string value)
         {
             try
@@ -256,6 +261,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Enables biometric login only after both Windows Hello verification and master-password confirmation succeed.
         private async void BiometricToggle_Checked(object sender, RoutedEventArgs e)
         {
             try
@@ -382,6 +388,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Removes the local biometric bootstrap secret when the user disables biometric login.
         private void BiometricToggle_Unchecked(object sender, RoutedEventArgs e)
         {
             try
@@ -403,6 +410,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Re-encrypts the user's stored secrets after a successful master-password change.
         private void ChangeMasterPassword_Click(object sender, RoutedEventArgs e)
         {
               var result = System.Windows.MessageBox.Show(
@@ -482,6 +490,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Rewrites the encrypted authenticator file with the newly derived key during master-password rotation.
         private void ReencryptAuthenticatorsFile(string username, byte[] oldKey, byte[] newKey)
         {
             try
@@ -524,6 +533,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Exports the full user bundle so the account can be restored on another machine.
         private void ExportData_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -659,6 +669,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Imports a previously exported user bundle and merges it into the local AppData store.
         private void ImportData_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -828,6 +839,7 @@ else
 
         }
 
+        // Exports only password entries as JSON for interoperability with other tools or backups.
         private void ExportPasswords_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -876,6 +888,7 @@ else
             }
         }
 
+        // Imports password JSON and merges entries into the current vault by name instead of replacing everything.
         private void ImportPasswords_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -1072,6 +1085,7 @@ else
             }
         }
 
+        // Parses several common JSON shapes so imported passwords can come from multiple external sources.
         private PasswordItem ParsePasswordItemFromJsonElement(System.Text.Json.JsonElement element)
         {
             if (element.ValueKind != System.Text.Json.JsonValueKind.Object)
@@ -1176,6 +1190,7 @@ else
             return foundAnyProperty ? passwordItem : null!;
         }
 
+        // Opens external documentation links such as the import/export tutorial in the user's default browser.
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             try

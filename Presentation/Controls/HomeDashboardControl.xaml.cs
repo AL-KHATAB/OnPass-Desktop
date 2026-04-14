@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 
 namespace OnPass.Presentation.Controls
 {
+    // Summarizes the current user's security posture, exposes the extension
+    // access token, and keeps the localhost bridge available from the dashboard.
     public partial class HomeDashboardControl : UserControl
     {
         private string? _accessToken;
@@ -52,6 +54,7 @@ namespace OnPass.Presentation.Controls
             UpdateSecuritySummary();
         }
 
+        // Starts the localhost bridge when no active dashboard session has done so yet.
         private void InitializeWebServer(string username, byte[] encryptionKey)
         {
             try
@@ -65,6 +68,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Retrieves and masks the extension access token that the browser companion uses for the current session.
         private void ExtensionKeyDisplay()
         {
             if (string.IsNullOrEmpty(_accessToken))
@@ -93,6 +97,7 @@ namespace OnPass.Presentation.Controls
             MaskedKeyText.Visibility = Visibility.Visible;
         }
 
+        // Copies the current extension token and schedules clipboard clearing if the user does not replace it.
         private void CopyKeyButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -150,6 +155,7 @@ namespace OnPass.Presentation.Controls
             timer.Start();
         }
 
+        // Refreshes the password, authenticator, and security-score tiles from the latest stored data.
         private void UpdateSecuritySummary()
         {
             try
@@ -195,6 +201,7 @@ namespace OnPass.Presentation.Controls
             _passwords = PasswordStorage.LoadPasswords(_username, _encryptionKey);
         }
 
+        // Reads the encrypted authenticator store and counts entries without exposing secrets in the UI.
         private void LoadAuthenticatorsInfo()
         {
             try
@@ -227,6 +234,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Combines password strength and authenticator coverage into a simple user-facing security score.
         private int CalculateSecurityScore()
         {
             if (_passwords.Count == 0)
@@ -258,6 +266,7 @@ namespace OnPass.Presentation.Controls
             return Math.Max(0, Math.Min(100, score));
         }
 
+        // Applies a simple strength heuristic that rewards length and character-set diversity.
         private int EvaluatePasswordStrength(string password)
         {
             int score = 0;
@@ -279,6 +288,8 @@ namespace OnPass.Presentation.Controls
 
             return score;
         }
+
+        // Clears the clipboard only if the copied value is still present after the timer expires.
         private async Task ClearClipboardIfUnchangedAsync(string copiedText, int seconds = 30)
         {
             try

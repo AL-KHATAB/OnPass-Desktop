@@ -12,6 +12,8 @@ using OnPass.Infrastructure.Web;
 
 namespace OnPass.Presentation.Controls
 {
+    // Handles the initial desktop login flow, derives the in-memory session key,
+    // and starts the localhost bridge that the browser extension relies on.
     public partial class LoginControl : System.Windows.Controls.UserControl
     {
         private MainWindow mainWindow;
@@ -23,6 +25,7 @@ namespace OnPass.Presentation.Controls
             mainWindow = mw;
         }
 
+        // Allows the custom top bar to support drag and double-click maximize behavior.
         private void TopBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -38,6 +41,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Pressing Enter from the login inputs triggers the same flow as clicking the login button.
         private void Input_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -46,6 +50,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Validates the user's credentials, derives the session encryption key, and starts the extension bridge.
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             string username = UsernameInput.Text;
@@ -124,6 +129,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Launches the biometric flow only when Windows Hello has already been configured for this user.
         private void BiometricLogin_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -148,6 +154,7 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Reads the persisted auto-lock choice so the main window can arm the correct inactivity timer after login.
         private int GetAutoLockTimeFromSettings(string username)
         {
             int minutes = 5;
@@ -191,6 +198,7 @@ namespace OnPass.Presentation.Controls
             return minutes;
         }
 
+        // Imports a full exported user bundle into AppData rather than only merging password JSON.
         private void ImportTextBlock_MouseLeftButtonDown(object sender, RoutedEventArgs e)
         {
             try
@@ -358,6 +366,7 @@ else
         }
 
 
+        // Recreates the stored password hash during login using the original credential salt.
         private byte[] HashPassword(string password, byte[] salt, int iterations = 10000, int hashSize = 32)
         {
             using (var pbkdf2 = new Rfc2898DeriveBytes(password, salt, iterations, HashAlgorithmName.SHA256))
@@ -366,6 +375,7 @@ else
             }
         }
 
+        // Compares stored and entered password hashes without allocating extra temporary structures.
         private bool CompareByteArrays(byte[] array1, byte[] array2)
         {
             if (array1.Length != array2.Length)
@@ -380,11 +390,13 @@ else
             return true;
         }
 
+        // Switches to the registration screen when the user does not yet have an account.
         private void RegisterTextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             mainWindow.Navigate(new RegisterControl(mainWindow));
         }
 
+        // Swaps between masked and plain-text password entry without changing the underlying value.
         private void TogglePasswordButton_Click(object sender, RoutedEventArgs e)
         {
             if (PasswordInput.Visibility == Visibility.Visible)

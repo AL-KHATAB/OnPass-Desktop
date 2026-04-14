@@ -3,6 +3,8 @@ using System.IO;
 using System.Windows;
 namespace OnPass;
 
+// Stores application-wide session state that multiple views need while the
+// current user is logged in and the local extension bridge is running.
 public partial class App : Application
 {
     // App-wide session state is shared across views so the current desktop session
@@ -13,6 +15,7 @@ public partial class App : Application
     public static string? CurrentAccessToken { get; set; }
     public static LocalWebServer? WebServer { get; set; }
 
+    // Loads the current user's persisted UI and security settings before the main dashboard uses them.
     public static void LoadUserSettings(string username)
     {
         try

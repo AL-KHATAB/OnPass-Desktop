@@ -7,8 +7,11 @@ using OnPass.Infrastructure.Security;
 
 namespace OnPass.Infrastructure.Storage
 {
+    // Persists the user's vault as one encrypted file in AppData and converts
+    // between in-memory password entries and their serialized on-disk form.
     public static class PasswordStorage
     {
+        // Stores the IV alongside the ciphertext so decryption can recover both values from one file.
         public static void SaveEncryptedPasswords(byte[] encryptedData, byte[] iv, string filePath)
         {
             // The file format is IV + ciphertext so decryption can recover the IV
@@ -37,11 +40,13 @@ namespace OnPass.Infrastructure.Storage
             return (encryptedData, iv);
         }
 
+        // Converts the current vault entries into JSON before encryption.
         public static string SerializePasswords(List<PasswordItem> passwords)
         {
             return JsonSerializer.Serialize(passwords);
         }
 
+        // Keeps corrupted or missing JSON from crashing the desktop session.
         public static List<PasswordItem> DeserializePasswords(string json)
         {
             if (string.IsNullOrEmpty(json))
@@ -58,6 +63,7 @@ namespace OnPass.Infrastructure.Storage
             }
         }
 
+        // Writes the entire vault as one encrypted blob tied to the current user profile.
         public static void SavePasswords(List<PasswordItem> passwords, string username, byte[] key)
         {
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -72,6 +78,7 @@ namespace OnPass.Infrastructure.Storage
             SaveEncryptedPasswords(encryptedData, iv, passwordsFilePath);
         }
 
+        // Loads and decrypts the current user's vault, returning an empty list if the file is absent or unreadable.
         public static List<PasswordItem> LoadPasswords(string username, byte[] key)
         {
             try

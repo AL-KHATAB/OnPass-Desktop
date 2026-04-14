@@ -6,6 +6,8 @@ using OnPass.Domain;
 using OnPass.Presentation.Controls;
 namespace OnPass.Presentation.Windows
 {
+    // Displays the saved password-history entries for one vault record and lets
+    // the user restore or clear that history without leaving the vault screen.
 
     public partial class PasswordHistoryWindow : Window
 
@@ -49,6 +51,7 @@ namespace OnPass.Presentation.Windows
 
 
 
+        // Rebuilds the list from the domain model so the dialog always reflects the latest stored history.
         private void LoadHistory()
 
         {
@@ -65,6 +68,7 @@ namespace OnPass.Presentation.Windows
 
         }
 
+        // Confirms the selected historical entry and reports the chosen index back to the vault screen.
         private void RestoreButton_Click(object sender, RoutedEventArgs e)
 
         {
@@ -109,6 +113,7 @@ namespace OnPass.Presentation.Windows
 
         }
 
+        // Clears all stored history entries for the current password item and persists the change immediately.
         private void ClearHistoryButton_Click(object sender, RoutedEventArgs e)
 
         {
@@ -151,6 +156,7 @@ namespace OnPass.Presentation.Windows
 
         }
 
+        // Closes the history dialog without requesting any restore action.
         private void CloseButton_Click(object sender, RoutedEventArgs e)
 
         {
@@ -161,6 +167,7 @@ namespace OnPass.Presentation.Windows
 
         }
 
+        // Enables restore only when the user has actively selected one history record.
         private void HistoryListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
 
         {

@@ -6,6 +6,8 @@ using OnPass.Presentation.Windows;
 
 namespace OnPass.Presentation.Controls
 {
+    // Acts as the authenticated dashboard shell and swaps the main content area
+    // between the home, vault, generator, authenticator, and settings screens.
     public partial class DashboardControl : UserControl
     {
         private MainWindow mainWindow;
@@ -23,6 +25,7 @@ namespace OnPass.Presentation.Controls
             DashboardContent.Content = new HomeDashboardControl(username, encryptionKey);
         }
 
+        // Shares the same custom top-bar behavior as the outer window shell.
         private void TopBar_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
@@ -38,29 +41,34 @@ namespace OnPass.Presentation.Controls
             }
         }
 
+        // Lets the shell adjust the internal top bar when the main window changes size state.
         public void SetTopBarHeight(double height)
         {
             Dashboardtopbar.Height = height;
         }
 
+        // Restores the home summary screen for the current user session.
         private void Home_Click(object sender, RoutedEventArgs e)
         {
             WelcomeText.Text = $"Welcome to OnPass, {username}!";
             DashboardContent.Content = new HomeDashboardControl(username, encryptionKey);
         }
 
+        // Opens the vault workflow while preserving the current session key and shell context.
         private void PasswordManagerButton_Click(object sender, RoutedEventArgs e)
         {
             WelcomeText.Text = "Password Manager";
             DashboardContent.Content = new PasswordVaultControl(mainWindow, username, encryptionKey);
         }
 
+        // Navigates to the password generator without leaving the authenticated dashboard shell.
         private void GeneratePasswordButton_Click(object sender, RoutedEventArgs e)
         {
             WelcomeText.Text = "Generate Password";
             DashboardContent.Content = new GeneratePasswordControl(username, encryptionKey);
         }
 
+        // Creates the authenticator view and injects the active user and session context before showing it.
         private void AuthenticatorButton_Click(object sender, RoutedEventArgs e)
         {
             DashboardContent.Content = null;
@@ -73,6 +81,7 @@ namespace OnPass.Presentation.Controls
             DashboardContent.Content = authenticatorControl;
         }
 
+        // Opens settings from within the same dashboard shell so session state is preserved.
         public void Settings_Click(object sender, RoutedEventArgs e)
         {
             WelcomeText.Text = "Settings";
@@ -82,6 +91,7 @@ namespace OnPass.Presentation.Controls
         }
 
 
+        // Performs a full logout by clearing session state and stopping the localhost bridge.
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             try
